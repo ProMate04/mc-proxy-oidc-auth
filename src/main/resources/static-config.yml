@@ -1,0 +1,62 @@
+# Velocity OIDC Auth - STATIC configuration
+# ===============================================================================================
+# Changes here take effect only after a full server restart
+# ===============================================================================================
+
+oidc:
+  provider-name: "OIDC Account"
+  # The issuer URL of your OIDC provider, e.g.:
+  #   Keycloak:  https://auth.example.com/realms/myrealm
+  #   Auth0:     https://your-tenant.eu.auth0.com/
+  #   Okta:      https://your-org.okta.com/oauth2/default
+  # The plugin fetches "<issuer>/.well-known/openid-configuration" on startup.
+  issuer: "https://your-provicer.example.com/oauth"
+
+  # Client credentials for a *confidential* client registered with your provider.
+  client-id: "client-id-CHANGEME"
+  client-secret: "client-secret-CHANGEME"
+
+  # Must be registered as an allowed redirect URI on your OIDC client, and must
+  # be reachable by the player's browser (not just the proxy machine). If the
+  # proxy is behind a reverse proxy / load balancer with TLS, point this at
+  # that public HTTPS URL and forward it to callback-server below.
+  redirect-uri: "https://your-server-url.example.com/login/callback"
+
+  # OIDC scopes that the plugin is allowed to read from the provider (needs the claims that
+  scopes:
+    - "openid"
+    - "profile"
+
+  # Claims in the ID token that will be used for identification
+  # "preferred_username" is the OIDC-standard claim most providers populate
+  username-claim: "preferred_username"
+  uuid-claim: "uuid"
+
+# The plugin runs its own tiny HTTP server to receive the OAuth2 redirect
+# after a player logs in via their browser. This does NOT need to be exposed
+# under the same host/port as redirect-uri above - you can put a reverse
+# proxy (nginx/Caddy) with TLS in front of it and forward to this address.
+callback-server:
+  bind-address: "0.0.0.0"
+  bind-port: 8085
+  path: "/login/callback"
+
+# Database connection details. The database is used to store registered users only.
+# The session storage does not use this database, is only loaded into memory and lost upon a restart
+# type can only be MYSQL or MARIADB
+database:
+  type: "MYSQL"
+  host: "db.example.com"
+  port: 3306
+  db: "minecraft"
+  user: "oidcauth-agent"
+  password: "somethings-hopefully-complicated-enough-CHANGEME"
+  prefix: "oidcauth"
+
+# LDAP server connection details
+# Search base should be the ou that contains the users
+ldap:
+  enabled: false
+  host: "ldap.example.com"
+  port: 389
+  searchBase: "ou=People,dc=example,dc=com"

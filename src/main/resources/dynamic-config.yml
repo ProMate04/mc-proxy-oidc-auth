@@ -1,0 +1,72 @@
+# Velocity OIDC Auth - DYNAMIC configuration
+# ===============================================================================================
+# Changes here take effect after running the '/velocity reload' command
+# ===============================================================================================
+
+# Names must match the server names you registered under [servers] in
+# velocity.toml.
+servers:
+  # Every unauthenticated player is redirected here and cannot leave.
+  limbo: "limbo"
+
+  # Where to send a player after a successful login, if the plugin doesn't
+  # know what they were originally trying to connect to (edge case fallback -
+  # normally they're sent back to whatever server they first tried to join).
+  fallback-target: "limbo"
+
+  # Servers that any player who is authenticated should be able to access
+  # the limbo server name must be included here
+  default-servers:
+    - "limbo"
+    - "survival"
+
+  # Servers that are only accessible if any of the given LDAP queries pass for
+  # the user that's trying to connect
+  # Here, the key is the server name, and the values are the LDAP queries
+  restricted-servers:
+    private:
+      - "cn=testgroup,ou=Groups,dc=example,dc=com"
+      - "cn=theotherguys,ou=Groups,dc=example,dc=com"
+    private2:
+      - "cn=anothertestgroup,ou=Groups,dc=example,dc=com"
+
+auth:
+  # How long a successful authentication remains valid before the player must
+  # re-authenticate on their next connection attempt.
+  session-duration-minutes: 720
+
+  # How long a player has to complete the browser login after being prompted
+  # before the request expires, and they must get a fresh link.
+  pending-auth-timeout-minutes: 3
+
+  # The commands that users are allowed to use before authenticating
+  allowed-commands-before-auth:
+    - "login"
+    - "register"
+    - "reg"
+
+# Messages shown to the player. Uses MiniMessage format to format the messages
+messages:
+  prompt-oidc: "<yellow>You must log in before you can play. <u><blue><login_url_click>Click here to authenticate</login_url_click></blue></u>, then you'll be sent through automatically."
+  prompt-pass-reg: "<yellow>You must register before you can play. Please use <blue>/register <password> <password></blue> to register."
+  prompt-pass-login: "<yellow>You must log in before you can play. Please use <blue>/login <password></blue> to authenticate."
+  already-authenticated: "<green>You're already authenticated."
+  already-registered: "<green>You're already registered."
+  already-logged-out: "<red>You're already logged out."
+  auth-success: "<green>Authenticated! Connecting you now..."
+  auth-failed: "<red>Authentication failed: <reason>. Try <white>/login</white> again."
+  oidc-user-mismatch: "<red>You authenticated as <white><identity></white>, but your Minecraft user is registered to another account. Log in with the matching account and try <white>/login</white> again."
+  pass-reg-success: "<green>Registered successfully!"
+  pass-reg-mismatch: "<red>The given passwords don't match!"
+  pass-login-mismatch: "<red>The password you entered is incorrect!"
+  valid-session: "<green>You already have a valid session, no need to authenticate!"
+  no-server-perm: "<red>You do not have permission to join this server!"
+  logged-out: "<red>You have been logged out."
+  command-wrong-usage: "<red>Incorrect command usage."
+  command-player-only: "<red>This command can only be used by players."
+  command-chat-restricted: "<red>You are not allowed to use commands or chat before authentication!"
+  account-type-changed: "<green>Changed account to <type> authentication."
+  account-already-type: "<red>This account is already using <type> authentication!"
+  account-not-registered: "<red>The account you are trying to unregister is not registered!"
+  account-unregister-success: "<green>Player unregistered successfully."
+  link-hover: "<gold>Opens OIDC login page in your browser"
